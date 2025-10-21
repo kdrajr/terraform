@@ -1,25 +1,22 @@
 resource "aws_instance" "devops" {
-  ami           = "ami-09c813fb71547fc4f"
+  ami           = var.ami_id
   vpc_security_group_ids = [data.aws_security_group.existing_scg.id]
-  instance_type = "t3.micro"
+  instance_type = var.instance_type
 
-  tags = {
-    Name = "node-1"
-    terraform = true
-  }
+  tags = var.ec2_tags
 }
 
 data "aws_security_group" "existing_scg" {
-  id = "sg-0f01e6396107117bf"
+  id = var.scg_id
 }
 
 
 
 resource "aws_route53_record" "route53" {
-  zone_id = "Z0975378N0ET60VBIODO"
-  name    = "ansible.sniggie.fun"
+  zone_id = var.r53_zoneid
+  name    = "${var.ec2_tags.Name}.sniggie.fun"
   type    = "A"
   ttl     = 1
   allow_overwrite = true
-  records = [aws_instance.ansible.private_ip]
+  records = var.ec2_tags.Name == "frontend" ? [aws_instance.devops.public_ip] : [aws_instance.devops.private_ip]
 }
