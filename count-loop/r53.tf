@@ -1,5 +1,5 @@
 resource "aws_route53_record" "dns_name" {
-    count = 4
+    count = length(var.instances)
     zone_id = var.zoneid
     name    = var.instances[count.index] == "frontend" ? "${var.domain_name}" : "${var.instances[count.index]}.${var.domain_name}"
     type    = "A"
