@@ -29,3 +29,5 @@ data "aws_ami" "devops-practice" {
 output "mongodb_info" {
     value = data.aws_instance.mongodb.private_ip
 } */
+
+
